@@ -1,0 +1,6 @@
+/archive.zip
+/www
+/zig-cache
+/zig-out
+**/._*
+**/.DS_Store
