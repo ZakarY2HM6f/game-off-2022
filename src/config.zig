@@ -26,7 +26,7 @@ pub const player_decel_speed = player_move_speed / player_decel_time;
 pub const player_dash_distance = 200.0;
 pub const player_dash_time = 0.15;
 pub const player_dash_speed = player_dash_distance / player_dash_time;
-pub const player_dash_cooldown = 0.3;
+pub const player_dash_cooldown = 0.7;
 
 pub const player_init_max_heart = 3;
 pub const player_init_blood = 0;
@@ -114,7 +114,7 @@ pub const guard_spear_pivot = .{
 pub const guard_spear_range = guard_attack_range - guard_spear_length;
 pub const guard_rotate_speed = std.math.pi * 2 * 0.85;
 pub const guard_rotate_curse_effect = 0.1;
-pub const guard_thrust_speed = 12;
+pub const guard_thrust_speed = 9.5;
 pub const guard_thrust_curse_effect = 0.1;
 
 pub const enemy_corpse_time = 20;
