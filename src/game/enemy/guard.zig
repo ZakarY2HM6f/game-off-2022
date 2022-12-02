@@ -40,6 +40,7 @@ pub const Guard = struct {
 
     drawable: Drawable = .{
         .draw_fn = draw,
+        .get_y_fn = getY,
     },
     damagable: Damagable = .{
         .get_rect_fn = getRect,
@@ -60,34 +61,34 @@ pub const Guard = struct {
 
     position: [2]f64,
 
-    pub fn draw(iface: *Drawable, game: *Game) void {
+    fn draw(iface: *Drawable, game: *Game) void {
         const renderer = game.renderer;
         const camera = &game.camera;
-        const guard = @fieldParentPtr(Self, "drawable", iface);
+        const self = @fieldParentPtr(Self, "drawable", iface);
 
         {
             const src = &sprites[
                 @enumToInt(blk: {
-                    if (guard.health > 0) break :blk Sprite.normal else break :blk Sprite.dead;
+                    if (self.health > 0) break :blk Sprite.normal else break :blk Sprite.dead;
                 })
             ];
             const dest = c.SDL_Rect{
-                .x = @floatToInt(i32, camera.worldToRenderX(guard.position[0] - k.guard_draw_pivot[0])),
-                .y = @floatToInt(i32, camera.worldToRenderY(guard.position[1] - k.guard_draw_pivot[1])),
+                .x = @floatToInt(i32, camera.worldToRenderX(self.position[0] - k.guard_draw_pivot[0])),
+                .y = @floatToInt(i32, camera.worldToRenderY(self.position[1] - k.guard_draw_pivot[1])),
                 .w = @floatToInt(i32, camera.worldToRenderS(k.guard_draw_size[0] * k.world_sprite_scale)),
                 .h = @floatToInt(i32, camera.worldToRenderS(k.guard_draw_size[1] * k.world_sprite_scale)),
             };
             _ = c.SDL_RenderCopyEx(renderer, game.textures.get(.guard_enemy), src, &dest, 0, null, c.SDL_FLIP_NONE);
         }
-        if (guard.health > 0) {
-            const direction = u.rotationToVector(guard.spear_rotation);
+        if (self.health > 0) {
+            const direction = u.rotationToVector(self.spear_rotation);
 
             const src = &sprites[@enumToInt(Sprite.spear)];
 
-            const p = guard.getSpearOrigin();
+            const p = self.getSpearOrigin();
             const animation_offset = .{
-                direction[0] * k.guard_spear_range * guard.animation,
-                direction[1] * k.guard_spear_range * guard.animation,
+                direction[0] * k.guard_spear_range * self.animation,
+                direction[1] * k.guard_spear_range * self.animation,
             };
             const dest = c.SDL_Rect{
                 .x = @floatToInt(i32, camera.worldToRenderX(p[0] - k.guard_draw_pivot[0] + animation_offset[0])),
@@ -102,6 +103,11 @@ pub const Guard = struct {
             };
             _ = c.SDL_RenderCopyEx(renderer, game.textures.get(.guard_enemy), src, &dest, rotation, &center, c.SDL_FLIP_NONE);
         }
+    }
+
+    fn getY(iface: *const Drawable) f64 {
+        const self = @fieldParentPtr(Self, "drawable", iface);
+        return self.position[1];
     }
 
     fn getRect(iface: *const Damagable) c.SDL_FRect {

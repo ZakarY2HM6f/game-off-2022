@@ -40,6 +40,7 @@ pub const Player = struct {
 
     drawable: Drawable = .{
         .draw_fn = draw,
+        .get_y_fn = getY,
     },
 
     max_heart: u32 = k.player_init_max_heart,
@@ -65,20 +66,25 @@ pub const Player = struct {
     pub fn draw(iface: *Drawable, game: *Game) void {
         const renderer = game.renderer;
         const camera = &game.camera;
-        const player = @fieldParentPtr(Self, "drawable", iface);
+        const self = @fieldParentPtr(Self, "drawable", iface);
 
         const src = &sprites[
             @enumToInt(blk: {
-                if (player.alive) break :blk Sprite.normal else break :blk Sprite.dead;
+                if (self.alive) break :blk Sprite.normal else break :blk Sprite.dead;
             })
         ];
         const dest = c.SDL_Rect{
-            .x = @floatToInt(i32, camera.worldToRenderX(player.position[0] - k.player_draw_pivot[0])),
-            .y = @floatToInt(i32, camera.worldToRenderY(player.position[1] - k.player_draw_pivot[1])),
+            .x = @floatToInt(i32, camera.worldToRenderX(self.position[0] - k.player_draw_pivot[0])),
+            .y = @floatToInt(i32, camera.worldToRenderY(self.position[1] - k.player_draw_pivot[1])),
             .w = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[0] * k.world_sprite_scale)),
             .h = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[1] * k.world_sprite_scale)),
         };
         _ = c.SDL_RenderCopyEx(renderer, game.textures.get(.player), src, &dest, 0, null, c.SDL_FLIP_NONE);
+    }
+
+    fn getY(iface: *const Drawable) f64 {
+        const self = @fieldParentPtr(Self, "drawable", iface);
+        return self.position[1];
     }
 
     pub fn getRect(self: *const Self) c.SDL_FRect {
@@ -94,7 +100,7 @@ pub const Player = struct {
         if (self.invincibility_timer <= 0) {
             self.heart -|= 1;
             self.invincibility_timer = k.player_invincibility_time;
-            self.blood = @min(self.blood + 2, k.player_max_blood);
+            self.blood = @min(self.blood + k.player_damage_blood, k.player_max_blood);
         }
     }
 };
@@ -104,15 +110,17 @@ pub fn drawScratch(game: *const Game) void {
     const camera = &game.camera;
     const player = &game.player;
 
-    if (player.scratch_display_timer > 0) {
-        const src = &sprites[@enumToInt(Sprite.scratch)];
-        const dest = c.SDL_Rect{
-            .x = @floatToInt(i32, camera.worldToRenderX(player.scratch_position[0] - k.player_draw_pivot[0])),
-            .y = @floatToInt(i32, camera.worldToRenderY(player.scratch_position[1] - k.player_draw_pivot[1])),
-            .w = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[0] * k.world_sprite_scale)),
-            .h = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[1] * k.world_sprite_scale)),
-        };
-        _ = c.SDL_RenderCopyEx(renderer, game.textures.get(.player), src, &dest, player.scratch_rotation, null, c.SDL_FLIP_NONE);
+    if (player.heart > 0) {
+        if (player.scratch_display_timer > 0) {
+            const src = &sprites[@enumToInt(Sprite.scratch)];
+            const dest = c.SDL_Rect{
+                .x = @floatToInt(i32, camera.worldToRenderX(player.scratch_position[0] - k.player_draw_pivot[0])),
+                .y = @floatToInt(i32, camera.worldToRenderY(player.scratch_position[1] - k.player_draw_pivot[1])),
+                .w = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[0] * k.world_sprite_scale)),
+                .h = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[1] * k.world_sprite_scale)),
+            };
+            _ = c.SDL_RenderCopyEx(renderer, game.textures.get(.player), src, &dest, player.scratch_rotation, null, c.SDL_FLIP_NONE);
+        }
     }
 }
 

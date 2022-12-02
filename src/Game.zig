@@ -159,8 +159,7 @@ fn draw(self: *Self) void {
 
     self.drawBullets();
 
-    var iter = self.drawableIter();
-    while (iter.iterator.next()) |drawable| {
+    for (self.getDrawables()) |drawable| {
         drawable.draw(self);
     }
 
