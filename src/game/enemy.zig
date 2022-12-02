@@ -74,15 +74,15 @@ pub fn spawnEnemies(game: *Game, delta_time: f64) void {
         enemies.guards.spawn(
             Guard{
                 .position = .{
-                    direction[0] * 1000,
-                    direction[1] * 1000,
+                    direction[0] * k.enemy_spawn_distance,
+                    direction[1] * k.enemy_spawn_distance,
                 },
             },
         ) catch {};
 
         enemies.spawn_timer = enemies.spawn_rate;
+        enemies.spawn_rate -= k.enemy_spawn_accel_rate;
     }
 
     enemies.spawn_timer -= delta_time;
-    enemies.spawn_rate = @max(enemies.spawn_rate - k.enemy_spawn_accel_rate * delta_time, k.enemy_min_spawn_rate);
 }

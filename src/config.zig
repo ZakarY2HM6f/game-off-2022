@@ -32,9 +32,10 @@ pub const player_init_max_heart = 3;
 pub const player_init_blood = 0;
 pub const player_max_blood = 30;
 pub const player_invincibility_time = 0.2;
+pub const player_damage_blood = 2;
 
 pub const player_heart2blood_rate = 15;
-pub const player_last_breath_time = 3.0;
+pub const player_last_breath_time = 1.75;
 
 pub const player_draw_pivot = .{
     32 / 2 * world_sprite_scale,
@@ -51,10 +52,10 @@ pub const player_coll_size = .{
     17 * world_sprite_scale,
 };
 
-pub const player_scratch_display_time = 0.12;
+pub const player_scratch_display_time = 0.5;
 pub const player_scratch_distance = 12.5 * world_sprite_scale;
-pub const player_scratch_radius = 9 * world_sprite_scale;
-pub const player_scratch_damage = 13;
+pub const player_scratch_radius = 8 * world_sprite_scale;
+pub const player_scratch_damage = 12;
 pub const player_scratch_curse = 5;
 pub const player_scratch_blood_gain = 12;
 pub const player_scratch_blood_lose = 2;
@@ -111,12 +112,13 @@ pub const guard_spear_pivot = .{
 };
 
 pub const guard_spear_range = guard_attack_range - guard_spear_length;
-pub const guard_rotate_speed = std.math.pi * 2 * 0.9;
-pub const guard_rotate_curse_effect = 0.15;
-pub const guard_thrust_speed = 7.5;
-pub const guard_thrust_curse_effect = 0.25;
+pub const guard_rotate_speed = std.math.pi * 2 * 0.85;
+pub const guard_rotate_curse_effect = 0.1;
+pub const guard_thrust_speed = 12;
+pub const guard_thrust_curse_effect = 0.1;
 
 pub const enemy_corpse_time = 20;
-pub const enemy_init_spawn_rate = 15;
-pub const enemy_min_spawn_rate = 5;
-pub const enemy_spawn_accel_rate = 0.05;
+pub const enemy_init_spawn_rate = 7.5;
+pub const enemy_min_spawn_rate = 3;
+pub const enemy_spawn_accel_rate = 0.1;
+pub const enemy_spawn_distance = 800;
