@@ -119,7 +119,10 @@ pub fn drawScratch(game: *const Game) void {
                 .w = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[0] * k.world_sprite_scale)),
                 .h = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[1] * k.world_sprite_scale)),
             };
-            _ = c.SDL_RenderCopyEx(renderer, game.textures.get(.player), src, &dest, player.scratch_rotation, null, c.SDL_FLIP_NONE);
+            const texture = game.textures.get(.player);
+            _ = c.SDL_SetTextureAlphaMod(texture, @floatToInt(u8, @min(player.scratch_display_timer / k.player_scratch_display_time, 0) * 255));
+            _ = c.SDL_RenderCopyEx(renderer, texture, src, &dest, player.scratch_rotation, null, c.SDL_FLIP_NONE);
+            _ = c.SDL_SetTextureAlphaMod(texture, 255);
         }
     }
 }
