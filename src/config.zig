@@ -32,7 +32,7 @@ pub const player_init_max_heart = 3;
 pub const player_init_blood = 0;
 pub const player_max_blood = 30;
 pub const player_invincibility_time = 0.2;
-pub const player_damage_blood = 2;
+pub const player_damage_blood = 1;
 
 pub const player_heart2blood_rate = 15;
 pub const player_last_breath_time = 1.75;

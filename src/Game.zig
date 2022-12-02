@@ -54,6 +54,7 @@ pub fn init(allocator: Allocator) !Self {
     };
 
     const textures = try Self.Textures.init(renderer);
+    _ = c.SDL_SetTextureBlendMode(textures.get(.player), c.SDL_BLENDMODE_BLEND);
 
     const camera = Self.Camera.init(window, renderer);
 

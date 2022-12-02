@@ -97,7 +97,7 @@ pub const Player = struct {
     }
 
     pub fn takeDamage(self: *Self) void {
-        if (self.invincibility_timer <= 0) {
+        if (self.invincibility_timer <= 0 and self.heart > 0) {
             self.heart -|= 1;
             self.invincibility_timer = k.player_invincibility_time;
             self.blood = @min(self.blood + k.player_damage_blood, k.player_max_blood);
@@ -120,7 +120,7 @@ pub fn drawScratch(game: *const Game) void {
                 .h = @floatToInt(i32, camera.worldToRenderS(k.player_draw_size[1] * k.world_sprite_scale)),
             };
             const texture = game.textures.get(.player);
-            _ = c.SDL_SetTextureAlphaMod(texture, @floatToInt(u8, @min(player.scratch_display_timer / k.player_scratch_display_time, 0) * 255));
+            _ = c.SDL_SetTextureAlphaMod(texture, @floatToInt(u8, @max(player.scratch_display_timer / k.player_scratch_display_time, 0) * 255));
             _ = c.SDL_RenderCopyEx(renderer, texture, src, &dest, player.scratch_rotation, null, c.SDL_FLIP_NONE);
             _ = c.SDL_SetTextureAlphaMod(texture, 255);
         }
