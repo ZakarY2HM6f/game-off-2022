@@ -98,7 +98,7 @@ pub const Player = struct {
 
     pub fn takeDamage(self: *Self) void {
         if (self.invincibility_timer <= 0 and self.heart > 0) {
-            self.heart -|= 1;
+            self.heart -= 1;
             self.invincibility_timer = k.player_invincibility_time;
             self.blood = @min(self.blood + k.player_damage_blood, k.player_max_blood);
         }
@@ -110,7 +110,7 @@ pub fn drawScratch(game: *const Game) void {
     const camera = &game.camera;
     const player = &game.player;
 
-    if (player.heart > 0) {
+    if (player.alive) {
         if (player.scratch_display_timer > 0) {
             const src = &sprites[@enumToInt(Sprite.scratch)];
             const dest = c.SDL_Rect{
